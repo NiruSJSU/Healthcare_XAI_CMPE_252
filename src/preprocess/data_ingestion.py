@@ -1,1 +1,3 @@
-#This file is for loading data from the data folder 
+#This file is for splitting data into training and test sets
+
+    
