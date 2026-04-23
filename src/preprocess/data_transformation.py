@@ -18,7 +18,12 @@ def process_pima_indians_dataset(df):
     df[columns_with_missing_vals] = scaler.fit_transform(df[columns_with_missing_vals])
     print("Pima Indians dataset cleaned and transformed successfully.")
     return df 
-    
+
+def process_heart_disease_dataset(df):
+    pass
+
+def process_nhanes_dataset(df):
+    pass
 
 if __name__ == "__main__":
     pima_df = load_pima_indians_data()
@@ -31,6 +36,14 @@ if __name__ == "__main__":
     
     save_processed_data(processed_pima_df, "pima_indians_diabetes_dataset_processed.csv")
     print("Processed Pima Indians dataset saved successfully.")
+    
+    heart_df = load_heart_disease_data()
+    print("Heart disease dataset loaded successfully.")
+    print(heart_df.head())
+    
+    nhanes_df = load_nhanes_data()
+    print("NHANES dataset loaded successfully.")
+    print(nhanes_df.head())
     
     
 

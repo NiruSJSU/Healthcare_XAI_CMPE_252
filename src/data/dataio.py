@@ -17,7 +17,7 @@ def load_pima_indians_data():
 
 def load_heart_disease_data():
     # Loads the heart disease dataset
-    return pd.read_csv(RAW_DATA_DIR / "heart_disease_uci_labelled.csv")
+    return pd.read_csv(RAW_DATA_DIR / "heart_disease.csv")
 
 def load_nhanes_data():
     # Loads the nhanes dataset
