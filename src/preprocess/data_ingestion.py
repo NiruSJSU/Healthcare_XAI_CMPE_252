@@ -11,10 +11,10 @@ def load_raw_data():
 
 if __name__ == "__main__":
     pima_df, heart_df, nhanes_df = load_raw_data()
-    print("Raw data loaded successfully.")
-    print("Pima Indians dataset:")
+    print("Raw data loaded successfully")
+    print("Pima Indians first entries:")
     print(pima_df.head())
-    print("\nHeart disease dataset:")
+    print("\nHeart disease first few entries:")
     print(heart_df.head())
-    print("\nNHANES dataset:")
+    print("\nNHANES dataset first few entries:")
     print(nhanes_df.head())
