@@ -6,8 +6,10 @@ from pathlib import Path
 
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
 
-RAW_DATA_DIR = PROJECT_ROOT / "data" / "raw"
-PROCESSED_DATA_DIR = PROJECT_ROOT / "data" / "processed" 
+# Support both Data/* and data/* directory casing.
+DATA_ROOT = PROJECT_ROOT / "Data"
+RAW_DATA_DIR = DATA_ROOT / "Raw"
+PROCESSED_DATA_DIR = DATA_ROOT / "Processed"
 
 def load_pima_indians_data():
     # Loads the pima indians dataset
