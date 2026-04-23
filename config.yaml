@@ -1,0 +1,14 @@
+# DATA 
+datarawdirectory: Data/raw/
+datainterimdirectory: Data/interim/
+dataprocesseddirectory: Data/processed/
+
+# MODELS
+modelpath: models/model.pkl
+
+# RESULTS
+resultsrawpath: results/results_raw.pkl
+resultsevaluatedpath: results/results_evaluated.pkl
+
+# VISUALIZATION
+figuredirectory: reports/figures/
