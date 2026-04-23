@@ -4,10 +4,10 @@ import pandas as pd
 import numpy as np
 from pathlib import Path
 
-Base_DIR = Path.cwd()
+ROOT_DIR = Path.cwd()
 
-RAW_DATA_DIR = Base_DIR/ "Data"/ "Raw"
-PROCESSED_DATA_DIR = Base_DIR /"Data"/"Processed"
+RAW_DATA_DIR = ROOT_DIR/ "Data"/ "Raw"
+PROCESSED_DATA_DIR = ROOT_DIR /"Data"/"Processed"
 
 def load_pima_indians_data():
     # Loads the pima indians dataset
