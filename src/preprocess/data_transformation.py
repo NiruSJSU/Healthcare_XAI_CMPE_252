@@ -6,6 +6,8 @@ from sklearn.preprocessing import StandardScaler, OneHotEncoder
 from sklearn.impute import SimpleImputer
 
 def process_pima_indians_dataset(df):
+    df = df.copy()
+    
     columns_with_missing_vals = ['Glucose', 'BloodPressure', 'SkinThickness', 'Insulin', 'BMI']
     
     for column in columns_with_missing_vals:
@@ -20,7 +22,21 @@ def process_pima_indians_dataset(df):
     return df 
 
 def process_heart_disease_dataset(df):
-    pass
+    df = df.copy()
+    numeric_columns = df.select_dtypes(include=[np.number]).columns.tolist()
+    columns_with_odd_values = ['chol', 'thalach','oldpeak', 'trestbps']
+    for column in columns_with_odd_values:
+        df[column] = df[column].replace(0, np.nan)
+    
+    imputer = SimpleImputer(strategy='median')
+    df[numeric_columns] = imputer.fit_transform(df[numeric_columns])
+    
+    scaler = StandardScaler()
+    df[numeric_columns] = scaler.fit_transform(df[numeric_columns])
+    
+    print("Heart disease dataset cleaned and transformed successfully.")
+    return df
+    
 
 def process_nhanes_dataset(df):
     pass
@@ -41,9 +57,14 @@ if __name__ == "__main__":
     print("Heart disease dataset loaded successfully.")
     print(heart_df.head())
     
+    processed_heart_df = process_heart_disease_dataset(heart_df)
+    print("Heart disease dataset processed successfully.")
+    print(processed_heart_df.head())
+    
+    save_processed_data(processed_heart_df, "heart_disease_processed.csv")
+    print("Processed heart disease dataset saved successfully.")
+    
     nhanes_df = load_nhanes_data()
     print("NHANES dataset loaded successfully.")
     print(nhanes_df.head())
     
-    
-
