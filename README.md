@@ -1,5 +1,11 @@
 # Healthcare_XAI_CMPE_252
-Final Project for CMPE 252 based around Explainable AI in Healthcare.
+Final Project for CMPE 252 with the goal of bringing explainability to improve the trustworthiness of Artificial Intelligence tools in the Healthcare field. 
+Our goals for this project are: 
+1. Collect a series of complex datasets in the healthcare domain pertaining to diseases such as heart disease and diabetes
+2. Train a series of State of the Art Artificial Intelligence models 
+3. Evaluate the performance of these models thoroughly
+4. Fit a series of explainability models such as LIME and SHAP
+5. Evaluate their ability to explain the results of our complex models
 
 ## Make Commands
 Please use the following commands to run the Python modules.
