@@ -27,6 +27,17 @@ def save_processed_data(df, file_name):
     df.to_csv(output_path, index=False)
     print(f"Processed data saved to {output_path}")
 
+# Loading processed data
+def load_processed_pima():
+    return pd.read_csv(PROCESSED_DATA_DIR / "pima_indians_diabetes_dataset_processed.csv")
+
+def load_processed_heart():
+    return pd.read_csv(PROCESSED_DATA_DIR / "heart_disease_processed.csv")
+
+def load_processed_nhanes():
+    return pd.read_csv(PROCESSED_DATA_DIR / "nhanes_cvd_processed.csv")
+
+
 if __name__ == "__main__":
     pima_df = load_pima_indians_data()
     print("Pima dataset loaded successfully.")
