@@ -29,12 +29,16 @@ def process_heart_disease_dataset(df):
     columns_with_odd_values = ['chol', 'thalach','oldpeak', 'trestbps']
     for column in columns_with_odd_values:
         df[column] = df[column].replace(0, np.nan)
+
     # We then impute the missing values using median and then scale them
     imputer = SimpleImputer(strategy='median')
     df[numeric_cols] = imputer.fit_transform(df[numeric_cols])
+
     #Scale here
     scaler = StandardScaler()
-    df[numeric_cols] = scaler.fit_transform(df[numeric_cols])
+    # Protect the target from scaling
+    scalable_cols = [col for col in numeric_cols if col != 'target']
+    df[scalable_cols] = scaler.fit_transform(df[scalable_cols])
     
     print("Heart disease dataset computation done")
     return df
@@ -46,19 +50,23 @@ def process_nhanes_dataset(df):
     df.drop(columns=['SEQN'], inplace=True)
     numeric_cols = df.select_dtypes(include=[np.number]).columns.tolist()
     #These are binary diseaes indicators that we should'nt scale
-    columns_with_disease_indicators = ['Congestive,Coronary,Heart_attack,Stroke,Angina']
-    
+    columns_with_disease_indicators = ['Congestive','Coronary','Heart_attack','Stroke', 'Angina']
+
     # We do replace the extraneous 9s with Nans to impute them
     for column in columns_with_disease_indicators:
         if column in df.columns:
             df[column] = df[column].replace({1: 1, 2: 0, 9: np.nan})
     
+    # Master target - checks if any true 
+    df['target'] = (df[columns_with_disease_indicators] == 1).any(axis=1).astype(int)
+
     # Here we impute those missing values and then scale the data
     imputer = SimpleImputer(strategy='median')
     df[numeric_cols] = imputer.fit_transform(df[numeric_cols])
     
     scaler = StandardScaler()
-    scalable_cols = [col for col in numeric_cols if col not in columns_with_disease_indicators]
+    # scalable_cols = [col for col in numeric_cols if col not in columns_with_disease_indicators]
+    scalable_cols = [col for col in numeric_cols if col != 'target' and col not in columns_with_disease_indicators]
     df[scalable_cols] = scaler.fit_transform(df[scalable_cols])
     
     print("NHANES dataset computation done")
