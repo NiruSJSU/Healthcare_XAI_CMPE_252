@@ -71,7 +71,7 @@ if __name__ == "__main__":
         initial_count = len(df)
         df = df.drop_duplicates()
 
-        X = df.drop(columns=[target_col])   # Features
+        X = df.drop(columns=[target_col])   # Feature matrix (input)
 
         # Drop to prevent data leakage
         if dataset_title == "NHANES CVD":   # Remove heart diseases
@@ -82,7 +82,9 @@ if __name__ == "__main__":
             if 'cp' in X.columns:
                 X = X.drop(columns=['cp'])
 
-        y = df[target_col]  # Labels
+
+        y = df[target_col]  # Labels (Ground truth)
+
 
         # Models
         models = [  # With greater cost if wrong
