@@ -22,15 +22,12 @@ def train_and_verify(model, X, y, name, ax):
     
     print(f"\n---- {name} ----")
     print(f"\n- Verification Results -")
-    # print(f"Mean CV Accuracy: {cv_scores.mean():.4f}")  # How good model is
-    # print(f"CV Stability (Std Dev): {cv_scores.std():.4f}") # How consistent model is
     
     # Final Training (on 80% of training data)
     model.fit(X_train, y_train)
     
     # Final Eval
     test_acc = model.score(X_test, y_test)
-    # print(f"Final Test Accuracy: {test_acc:.4f}")
 
     final_results(model, X_test, y_test, name, ax)
 
