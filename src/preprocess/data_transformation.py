@@ -12,14 +12,21 @@ def process_pima_indians_dataset(df):
     
     for column in columns_with_missing_vals:
         df[column] = df[column].replace(0, np.nan)
+    
+    # All numeric columns
+    numeric_cols = df.select_dtypes(include=[np.number]).columns.tolist()
+
     # We then impute the missing values using median and then scale them
     imputer = SimpleImputer(strategy='median')
-    df[columns_with_missing_vals] = imputer.fit_transform(df[columns_with_missing_vals])
+    df[numeric_cols] = imputer.fit_transform(df[numeric_cols])
     
     scaler = StandardScaler()
-    df[columns_with_missing_vals] = scaler.fit_transform(df[columns_with_missing_vals])
+    scalable_cols = [col for col in numeric_cols if col != 'Outcome']
+    df[scalable_cols] = scaler.fit_transform(df[scalable_cols])
+
     print("Pima Indians dataset computation done")
     return df 
+
 
 def process_heart_disease_dataset(df):
     df = df.copy()
