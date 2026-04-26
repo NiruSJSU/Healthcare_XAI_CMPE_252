@@ -67,6 +67,10 @@ if __name__ == "__main__":
     for row, (df, target_col, dataset_title) in enumerate(datasets):
         print(f"\n{'='*43}\nStarting: {dataset_title}\n{'='*43}")   # Current dataset
         
+        # Remove duplicates
+        initial_count = len(df)
+        df = df.drop_duplicates()
+
         X = df.drop(columns=[target_col])   # Features
 
         # Drop to prevent data leakage
