@@ -85,10 +85,10 @@ if __name__ == "__main__":
         y = df[target_col]  # Labels
 
         # Models
-        models = [
-            (LogisticRegression(max_iter=1000), "Logistic Regression"),
-            (RandomForestClassifier(random_state=42), "Random Forest"),
-            (SVC(probability=True, random_state=42), "SVM")
+        models = [  # With greater cost if wrong
+            (LogisticRegression(max_iter=1000, class_weight='balanced'), "Logistic Regression"),
+            (RandomForestClassifier(random_state=42, class_weight='balanced'), "Random Forest"),
+            (SVC(probability=True, random_state=42, class_weight='balanced'), "SVM")
         ]
 
         # Loop through each model & train
