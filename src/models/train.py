@@ -24,9 +24,7 @@ def train_and_verify(model, X, y, name, ax):
     
     # Final Training (on 80% of training data)
     model.fit(X_train, y_train)
-    
-    # Final Eval
-    test_acc = model.score(X_test, y_test)
+
 
     final_results(model, X_test, y_test, name, ax)
 
