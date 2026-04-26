@@ -1,9 +1,6 @@
 import pandas as pd
 from src.data.dataio import load_processed_pima, load_processed_heart, load_processed_nhanes
 from sklearn.model_selection import cross_val_score, train_test_split
-# from sklearn.linear_model import LogisticRegression
-# from sklearn.ensemble import RandomForestClassifier
-# from sklearn.svm import SVC
 from sklearn.metrics import (
     accuracy_score, 
     f1_score, 
@@ -89,11 +86,6 @@ if __name__ == "__main__":
 
 
         # Models
-        # models = [  # With greater cost if wrong
-        #     (LogisticRegression(max_iter=1000, class_weight='balanced'), "Logistic Regression"),
-        #     (RandomForestClassifier(random_state=42, class_weight='balanced'), "Random Forest"),
-        #     (SVC(probability=True, random_state=42, class_weight='balanced'), "SVM")
-        # ]
         models = get_model_pipeline()
 
         # Loop through each model & train
