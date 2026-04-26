@@ -68,6 +68,13 @@ if __name__ == "__main__":
         print(f"\n{'='*43}\nStarting: {dataset_title}\n{'='*43}")   # Current dataset
         
         X = df.drop(columns=[target_col])   # Features
+
+        # Drop to prevent data leakage
+        if dataset_title == "NHANES CVD":   # Remove heart diseases
+            leaky_cols = ['Stroke', 'Coronary', 'Angina', 'Congestive', 'Heart_attack']
+            X = X.drop(columns=[c for c in leaky_cols if c in X.columns])
+          
+
         y = df[target_col]  # Labels
 
         # Models
