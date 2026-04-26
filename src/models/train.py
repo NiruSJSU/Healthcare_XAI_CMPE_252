@@ -74,6 +74,9 @@ if __name__ == "__main__":
             leaky_cols = ['Stroke', 'Coronary', 'Angina', 'Congestive', 'Heart_attack']
             X = X.drop(columns=[c for c in leaky_cols if c in X.columns])
           
+        if dataset_title == "Heart Disease":    # Remove chest pain (makes alr almost certain)
+            if 'cp' in X.columns:
+                X = X.drop(columns=['cp'])
 
         y = df[target_col]  # Labels
 
