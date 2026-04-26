@@ -4,6 +4,8 @@ from sklearn.model_selection import cross_val_score, train_test_split
 from sklearn.linear_model import LogisticRegression
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.svm import SVC
+from sklearn.neural_network import MLPClassifier
+from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
 from sklearn.metrics import (
     accuracy_score, 
     f1_score, 
@@ -47,7 +49,7 @@ def final_results(model, X_test, y_test, name, ax):
 
     # Confusion Matrix
     ConfusionMatrixDisplay.from_estimator(model, X_test, y_test, cmap='Blues', ax=ax, colorbar=False)
-    ax.set_title(f"{name}", fontsize=9)
+    ax.set_title(f"{name}", fontsize=7)
 
 
 
@@ -60,7 +62,7 @@ if __name__ == "__main__":
     ]
 
     # Window for Confusion Matrices (3x3 grid)
-    fig, axes = plt.subplots(3, 3, figsize=(10, 8))
+    fig, axes = plt.subplots(3, 5, figsize=(18, 10))
     plt.subplots_adjust(hspace=0.6, wspace=0.4)
 
 
@@ -90,7 +92,9 @@ if __name__ == "__main__":
         models = [  # With greater cost if wrong
             (LogisticRegression(max_iter=1000, class_weight='balanced'), "Logistic Regression"),
             (RandomForestClassifier(random_state=42, class_weight='balanced'), "Random Forest"),
-            (SVC(probability=True, random_state=42, class_weight='balanced'), "SVM")
+            (SVC(probability=True, random_state=42, class_weight='balanced'), "SVM"),
+            (MLPClassifier(hidden_layer_sizes=(16, 8), max_iter=1000, random_state=42), "MLP"),
+            (LinearDiscriminantAnalysis(), "LDA")
         ]
 
         # Loop through each model & train
