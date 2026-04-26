@@ -1,5 +1,7 @@
 PYTHON ?= python
 
+.PHONY: all dataio ingest transform train evaluate clean-results clean-all
+
 #---------------------------------------------------
 # Targets to run the model pipeline
 #---------------------------------------------------
@@ -25,7 +27,7 @@ predict:
 evaluate:
 	$(PYTHON) -m src.evaluate.evaluate
 
-all: dataio ingest transform train
+all: clean-results dataio ingest transform train evaluate
 
 #---------------------------------------------------
 # Cleaning folders
