@@ -32,7 +32,7 @@ def explain_xai(model, X_train, X_test, feature_names, name, run_dir):
     explainer_shap = shap.KernelExplainer(model.predict_proba, background)
     shap_values = explainer_shap.shap_values(X_test.iloc[0:1, :])
     
-    # Handle different SHAP output formats[cite: 1]
+    # Handle different SHAP output formats
     if isinstance(shap_values, list):
         display_values, base_value = shap_values[1], explainer_shap.expected_value[1]
     elif len(shap_values.shape) == 3:

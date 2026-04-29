@@ -27,7 +27,6 @@ def train_and_verify(model, X, y, name, ax, save_dir):
     # Final Training
     model.fit(X_train, y_train)
 
-    # --- SAVE MODEL ---
     # Create a filename-safe version of the model/dataset name
     safe_name = name.replace(" ", "_").replace("-", "_")
     save_path = os.path.join(save_dir, f"{safe_name}.joblib")
@@ -57,7 +56,6 @@ def final_results(model, X_test, y_test, name, ax):
     ax.set_title(f"{name}", fontsize=7)
 
 if __name__ == "__main__":
-    # 1. SETUP DIRECTORIES
     # Anchors directory creation to the location of train.py
     script_dir = os.path.dirname(os.path.abspath(__file__))
     trained_models_dir = os.path.join(script_dir, "trained_models")
