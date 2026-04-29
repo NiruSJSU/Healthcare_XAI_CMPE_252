@@ -91,3 +91,6 @@ target/
 
 # Other
 .vscode/
+
+src/evaluate/results/
+src/models/trained_models/
