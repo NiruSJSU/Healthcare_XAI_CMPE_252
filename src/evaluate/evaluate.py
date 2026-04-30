@@ -9,6 +9,22 @@ import shap
 import lime
 import lime.lime_tabular
 
+
+def _build_shap_background(X_train, clusters=10):
+    """Build SHAP background data with a safe fallback for kmeans failures."""
+    if len(X_train) == 0:
+        raise ValueError("X_train is empty; cannot build SHAP background.")
+
+    k = min(clusters, len(X_train))
+    try:
+        return shap.kmeans(X_train, k)
+    except Exception as exc:
+        # Some macOS + Python/BLAS combinations fail inside threadpoolctl during kmeans.
+        sample_size = min(max(k, 10), len(X_train))
+        print(f"[warn] SHAP kmeans background failed ({exc}); using sampled background of size {sample_size}.")
+        return shap.sample(X_train, sample_size, random_state=42)
+
+
 def explain_xai(model, X_train, X_test, feature_names, name, run_dir):
     base_filename = name.replace(" ", "_").replace("-", "_")
 
@@ -28,7 +44,7 @@ def explain_xai(model, X_train, X_test, feature_names, name, run_dir):
     plt.close(fig_lime) 
 
     # --- SHAP Implementation ---
-    background = shap.kmeans(X_train, 10)
+    background = _build_shap_background(X_train, clusters=10)
     explainer_shap = shap.KernelExplainer(model.predict_proba, background)
     shap_values = explainer_shap.shap_values(X_test.iloc[0:1, :])
     
