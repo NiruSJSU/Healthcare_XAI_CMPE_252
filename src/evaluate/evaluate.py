@@ -59,7 +59,7 @@ def explain_xai(model, X_train, X_test, feature_names, name, run_dir):
     )
 
     fig_lime = exp_lime.as_pyplot_figure()
-    fig_lime.set_size_inches(10, 5)
+    fig_lime.set_size_inches(9, 5)
     ax_lime = fig_lime.gca()
 
     # Calculate values
