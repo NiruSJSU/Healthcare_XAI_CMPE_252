@@ -70,11 +70,25 @@ def explain_xai(model, X_train, X_test, feature_names, name, run_dir):
     
     # Handle different SHAP output formats
     if isinstance(shap_values, list):
-        display_values, base_value = shap_values[1], explainer_shap.expected_value[1]
-    elif len(shap_values.shape) == 3:
-        display_values, base_value = shap_values[0, :, 1], explainer_shap.expected_value[1]
+        display_values = shap_values[1][0] 
+        base_value = explainer_shap.expected_value[1]
+    elif len(shap_values.shape) == 3:   
+        display_values = shap_values[0, :, 1]
+        base_value = explainer_shap.expected_value[1]
     else:
-        display_values, base_value = shap_values, explainer_shap.expected_value
+        display_values = shap_values[0]
+        base_value = explainer_shap.expected_value
+
+
+    explanation = shap.Explanation(
+        values=display_values, 
+        base_values=base_value, 
+        data=raw_values,    # Use real units
+        feature_names=feature_names
+    )
+
+    plt.figure(figsize=(10, 6))
+    shap.plots.waterfall(explanation, max_display=10, show=False)
 
     plt.figure() 
     shap.force_plot(base_value, display_values, X_test.iloc[0:1, :], 
