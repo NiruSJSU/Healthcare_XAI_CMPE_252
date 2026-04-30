@@ -41,14 +41,22 @@ def explain_xai(model, X_train, X_test, feature_names, name, run_dir):
 
     # Training set back to raw units
     X_train_raw = safe_inverse(scaler, X_train)
+
+
     explainer_lime = lime.lime_tabular.LimeTabularExplainer(
-        training_data=X_train.values,
+        training_data=X_train_raw, 
         feature_names=feature_names,
-        class_names=['Negative', 'Positive'],
-        mode='classification'
+        class_names=['No Disease', 'Disease'],
+        mode='classification',
+        discretize_continuous=True
     )
-    exp_lime = explainer_lime.explain_instance(X_test.values[0], model.predict_proba, num_features=5)
-    
+
+    exp_lime = explainer_lime.explain_instance(
+        raw_values, 
+        model.predict_proba, 
+        num_features=10
+    )
+
     fig_lime = exp_lime.as_pyplot_figure()
     plt.title(f"LIME Explanation: {name}")
     plt.tight_layout()
