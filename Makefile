@@ -27,6 +27,9 @@ evaluate:
 
 all: dataio ingest transform train evaluate
 
+install:
+	$(PYTHON) -m pip install -q -r requirements.txt
+
 #---------------------------------------------------
 # Cleaning folders
 #---------------------------------------------------
