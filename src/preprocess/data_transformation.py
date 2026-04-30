@@ -4,6 +4,7 @@ import pandas as pd
 import numpy as np
 from sklearn.preprocessing import StandardScaler
 from sklearn.impute import SimpleImputer
+import joblib
 
 def process_pima_indians_dataset(df):
     df = df.copy()
@@ -25,7 +26,7 @@ def process_pima_indians_dataset(df):
     df[scalable_cols] = scaler.fit_transform(df[scalable_cols])
 
     print("Pima Indians dataset computation done")
-    return df 
+    return df, scaler, imputer
 
 
 def process_heart_disease_dataset(df):
@@ -48,7 +49,7 @@ def process_heart_disease_dataset(df):
     df[scalable_cols] = scaler.fit_transform(df[scalable_cols])
     
     print("Heart disease dataset computation done")
-    return df
+    return df, scaler, imputer
     
 
 def process_nhanes_dataset(df):
@@ -77,37 +78,56 @@ def process_nhanes_dataset(df):
     df[scalable_cols] = scaler.fit_transform(df[scalable_cols])
     
     print("NHANES dataset computation done")
-    return df 
+    return df, scaler, imputer
 
 if __name__ == "__main__":
     #This is the module for this file
     # We load the raw data in the first step
+    # Pima Dataset
     pima_df = load_pima_indians_data()
     print("Pima Indians dataset loaded from csv")
     print(pima_df.head())
     # We call the process function and store it in this df variable
-    processed_pima_df = process_pima_indians_dataset(pima_df)
+    # processed_pima_df = process_pima_indians_dataset(pima_df)
+    processed_pima_df, pima_scaler, pima_imputer = process_pima_indians_dataset(pima_df)
     print("Pima Indians dataset processed")
     print(processed_pima_df.head())
+
     # We finally save it to a new csv and print the follow up message
     save_processed_data(processed_pima_df, "pima_indians_diabetes_dataset_processed.csv")
+    joblib.dump(pima_scaler, 'src/models/trained_models/pima_scaler.joblib')
+    joblib.dump(pima_imputer, 'src/models/trained_models/pima_imputer.joblib')
     print("Pima Indians dataset saved to new csv")
+    
+
+
     # Repeat for all data files
+    # Heart Disease Dataset
     heart_df = load_heart_disease_data()
     print("Heart disease dataset loaded from csv")
     print(heart_df.head())
     
-    processed_heart_df = process_heart_disease_dataset(heart_df)
+    processed_heart_df, heart_scaler, heart_imputer = process_heart_disease_dataset(heart_df)
     print("Heart disease dataset processed")
     print(processed_heart_df.head())
     
     save_processed_data(processed_heart_df, "heart_disease_processed.csv")
+    joblib.dump(heart_scaler, 'src/models/trained_models/heart_scaler.joblib')
+    joblib.dump(heart_imputer, 'src/models/trained_models/heart_imputer.joblib')
     print("Processed Heart disease dataset saved to new csv")
     
+
+
+    # NHANES
     nhanes_df = load_nhanes_data()
     print("NHANES dataset loaded from csv")
     print(nhanes_df.head())
-    
-    save_processed_data(process_nhanes_dataset(nhanes_df), "nhanes_cvd_processed.csv")
+
+    processed_nhanes_df, nhanes_scaler, nhanes_imputer = process_nhanes_dataset(nhanes_df)
+    print("NHANES dataset processed")
+
+    save_processed_data(processed_nhanes_df, "nhanes_cvd_processed.csv")
+    joblib.dump(nhanes_scaler, 'src/models/trained_models/nhanes_scaler.joblib')
+    joblib.dump(nhanes_imputer, 'src/models/trained_models/nhanes_imputer.joblib')
     print("Processed NHANES dataset saved to new csv")
     
