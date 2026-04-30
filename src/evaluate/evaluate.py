@@ -9,10 +9,38 @@ import shap
 import lime
 import lime.lime_tabular
 
+
+def safe_inverse(scaler, data): # Inverse transformation
+    import numpy as np
+    try:
+        return scaler.inverse_transform(data)
+    except ValueError:  # If mismatching then adds dummy zeros
+        n_features = data.shape[1]
+        padded = np.zeros((data.shape[0], scaler.n_features_in_))
+        padded[:, :n_features] = data.values if hasattr(data, 'values') else data
+
+        return scaler.inverse_transform(padded)[:, :n_features]
+
 def explain_xai(model, X_train, X_test, feature_names, name, run_dir):
     base_filename = name.replace(" ", "_").replace("-", "_")
 
+    # Scalar path choosen based off dataset name
+    if "PIMA" in name:
+        scaler_path = os.path.join(models_dir, 'pima_scaler.joblib')
+    elif "Heart" in name:
+        scaler_path = os.path.join(models_dir, 'heart_scaler.joblib')
+    else:
+        scaler_path = os.path.join(models_dir, 'nhanes_scaler.joblib')
+    
+    scaler = joblib.load(scaler_path)
+
+    # Scaled instances back to clinical units
+    raw_values = safe_inverse(scaler, X_test.iloc[0:1])[0]
+
     # --- LIME Implementation ---
+
+    # Training set back to raw units
+    X_train_raw = safe_inverse(scaler, X_train)
     explainer_lime = lime.lime_tabular.LimeTabularExplainer(
         training_data=X_train.values,
         feature_names=feature_names,
