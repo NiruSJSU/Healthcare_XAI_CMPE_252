@@ -9,7 +9,6 @@ import shap
 import lime
 import lime.lime_tabular
 
-
 def safe_inverse(scaler, data): # Inverse transformation
     import numpy as np
     try:
@@ -20,6 +19,7 @@ def safe_inverse(scaler, data): # Inverse transformation
         padded[:, :n_features] = data.values if hasattr(data, 'values') else data
 
         return scaler.inverse_transform(padded)[:, :n_features]
+    
 
 def explain_xai(model, X_train, X_test, feature_names, name, run_dir):
     base_filename = name.replace(" ", "_").replace("-", "_")
@@ -33,16 +33,17 @@ def explain_xai(model, X_train, X_test, feature_names, name, run_dir):
         scaler_path = os.path.join(models_dir, 'nhanes_scaler.joblib')
     
     scaler = joblib.load(scaler_path)
-
+    
     # Scaled instances back to clinical units
     raw_values = safe_inverse(scaler, X_test.iloc[0:1])[0]
+
 
     # --- LIME Implementation ---
 
     # Training set back to raw units
     X_train_raw = safe_inverse(scaler, X_train)
 
-
+    
     explainer_lime = lime.lime_tabular.LimeTabularExplainer(
         training_data=X_train_raw, 
         feature_names=feature_names,
@@ -56,9 +57,10 @@ def explain_xai(model, X_train, X_test, feature_names, name, run_dir):
         model.predict_proba, 
         num_features=10
     )
-    
 
     fig_lime = exp_lime.as_pyplot_figure()
+    fig_lime.set_size_inches(10, 5)
+    ax_lime = fig_lime.gca()
 
     # Calculate values
     prediction_prob = model.predict_proba(X_test.iloc[0:1])[0][1]
@@ -71,29 +73,29 @@ def explain_xai(model, X_train, X_test, feature_names, name, run_dir):
                  bbox=dict(boxstyle='round', facecolor='white', edgecolor='black', alpha=0.9),
                  fontsize=11, fontweight='bold')
 
-
-    plt.title(f"LIME Explanation: {name}")
-    plt.tight_layout()
-    fig_lime.savefig(os.path.join(run_dir, f"{base_filename}_LIME.png"))
-    plt.close(fig_lime) 
+    plt.title(f"LIME Explanation: {name}", pad=20)
+    plt.tight_layout(rect=[0.1, 0, 1, 0.95])
+    fig_lime.savefig(os.path.join(run_dir, f"{base_filename}_LIME.png"), bbox_inches='tight')
+    plt.close(fig_lime)
 
     # --- SHAP Implementation ---
     background = shap.kmeans(X_train, 10)
     explainer_shap = shap.KernelExplainer(model.predict_proba, background)
+    
     shap_values = explainer_shap.shap_values(X_test.iloc[0:1, :])
     
-    # Handle different SHAP output formats
+    # Handling different SHAP output formats
     if isinstance(shap_values, list):
-        display_values = shap_values[1][0] 
+        display_values = shap_values[1][0] # 1D array for first instance
         base_value = explainer_shap.expected_value[1]
-    elif len(shap_values.shape) == 3:   
+    elif len(shap_values.shape) == 3:   # Incase shape is: (instances, features, classes)
         display_values = shap_values[0, :, 1]
         base_value = explainer_shap.expected_value[1]
     else:
         display_values = shap_values[0]
         base_value = explainer_shap.expected_value
 
-
+    
     explanation = shap.Explanation(
         values=display_values, 
         base_values=base_value, 
@@ -104,19 +106,18 @@ def explain_xai(model, X_train, X_test, feature_names, name, run_dir):
     plt.figure(figsize=(10, 6))
     shap.plots.waterfall(explanation, max_display=10, show=False)
 
-    plt.figure() 
-    shap.force_plot(base_value, display_values, X_test.iloc[0:1, :], 
-                    feature_names=feature_names, matplotlib=True, show=False)
-    
     # Plain text diagnosis at top left
     plt.text(0.01, 0.95, f"RESULT: {diagnosis}\nCONFIDENCE: {conf:.1f}%", 
              transform=plt.gcf().transFigure, ha='left', va='top',
              bbox=dict(boxstyle='round', facecolor='white', alpha=0.8),
              fontsize=12, fontweight='bold')
 
-    plt.title(f"SHAP Force Plot: {name}")
+
+
+    plt.title(f"SHAP Waterfall: {name}")
+    plt.tight_layout(rect=[0.1, 0, 1, 0.95])
     plt.savefig(os.path.join(run_dir, f"{base_filename}_SHAP.png"), bbox_inches='tight')
-    plt.close() 
+    plt.close()
 
 if __name__ == "__main__":
     # Robust Pathing for Makefile execution
