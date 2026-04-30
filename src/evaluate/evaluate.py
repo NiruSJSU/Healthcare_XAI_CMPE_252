@@ -56,8 +56,22 @@ def explain_xai(model, X_train, X_test, feature_names, name, run_dir):
         model.predict_proba, 
         num_features=10
     )
+    
 
     fig_lime = exp_lime.as_pyplot_figure()
+
+    # Calculate values
+    prediction_prob = model.predict_proba(X_test.iloc[0:1])[0][1]
+    diagnosis = "NO DISEASE" if prediction_prob < 0.5 else "DISEASE"
+    conf = (1 - prediction_prob if diagnosis == "NO DISEASE" else prediction_prob) * 100
+
+    # Plain text diagnosis at top left
+    fig_lime.text(0.02, 0.95, f"RESULT: {diagnosis}\nCONFIDENCE: {conf:.1f}%", 
+                 transform=fig_lime.transFigure, ha='left', va='top',
+                 bbox=dict(boxstyle='round', facecolor='white', edgecolor='black', alpha=0.9),
+                 fontsize=11, fontweight='bold')
+
+
     plt.title(f"LIME Explanation: {name}")
     plt.tight_layout()
     fig_lime.savefig(os.path.join(run_dir, f"{base_filename}_LIME.png"))
@@ -93,6 +107,13 @@ def explain_xai(model, X_train, X_test, feature_names, name, run_dir):
     plt.figure() 
     shap.force_plot(base_value, display_values, X_test.iloc[0:1, :], 
                     feature_names=feature_names, matplotlib=True, show=False)
+    
+    # Plain text diagnosis at top left
+    plt.text(0.01, 0.95, f"RESULT: {diagnosis}\nCONFIDENCE: {conf:.1f}%", 
+             transform=plt.gcf().transFigure, ha='left', va='top',
+             bbox=dict(boxstyle='round', facecolor='white', alpha=0.8),
+             fontsize=12, fontweight='bold')
+
     plt.title(f"SHAP Force Plot: {name}")
     plt.savefig(os.path.join(run_dir, f"{base_filename}_SHAP.png"), bbox_inches='tight')
     plt.close() 
