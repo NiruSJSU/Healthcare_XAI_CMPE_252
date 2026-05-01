@@ -1,17 +1,13 @@
 import pandas as pd
 from src.data.dataio import load_processed_pima, load_processed_heart, load_processed_nhanes
 from sklearn.model_selection import cross_val_score, train_test_split
-from sklearn.linear_model import LogisticRegression
-from sklearn.ensemble import RandomForestClassifier
-from sklearn.svm import SVC
-from sklearn.neural_network import MLPClassifier
-from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
 from sklearn.metrics import (
     accuracy_score, 
     f1_score, 
     roc_auc_score, 
     ConfusionMatrixDisplay)
 import matplotlib.pyplot as plt
+from src.models.model import get_model_pipeline
 import joblib
 import os
 
@@ -23,8 +19,9 @@ def train_and_verify(model, X, y, name, ax, save_dir):
     cross_val_score(model, X_train, y_train, cv=5, scoring='accuracy')
     
     print(f"\n---- {name} ----")
+    print(f"\n- Verification Results -")
     
-    # Final Training
+    # Final Training (on 80% of training data)
     model.fit(X_train, y_train)
 
     # Create a filename-safe version of the model/dataset name
@@ -47,6 +44,7 @@ def final_results(model, X_test, y_test, name, ax):
         probs = model.decision_function(X_test)
     
     # Print all results
+    print(f"\n- Results -")
     print(f"Accuracy: {accuracy_score(y_test, preds):.4f}")
     print(f"F1-Score: {f1_score(y_test, preds):.4f}")
     print(f"ROC-AUC:  {roc_auc_score(y_test, probs):.4f}")
@@ -80,27 +78,21 @@ if __name__ == "__main__":
         
         # Remove duplicates
         df = df.drop_duplicates()
-        X = df.drop(columns=[target_col])
+        X = df.drop(columns=[target_col])   # Feature matrix (input)
 
         # Drop to prevent data leakage
-        if dataset_title == "NHANES CVD":
+        if dataset_title == "NHANES CVD":   # Remove heart diseases
             leaky_cols = ['Stroke', 'Coronary', 'Angina', 'Congestive', 'Heart_attack']
             X = X.drop(columns=[c for c in leaky_cols if c in X.columns])
           
-        if dataset_title == "Heart Disease":
+        if dataset_title == "Heart Disease":    # Remove chest pain (makes alr almost certain)
             if 'cp' in X.columns:
                 X = X.drop(columns=['cp'])
 
-        y = df[target_col]
+        y = df[target_col]  # Labels (Ground truth)
 
         # Models
-        models = [
-            (LogisticRegression(max_iter=1000, class_weight='balanced'), "Logistic Regression"),
-            (RandomForestClassifier(random_state=42, class_weight='balanced'), "Random Forest"),
-            (SVC(probability=True, random_state=42, class_weight='balanced'), "SVM"),
-            (MLPClassifier(hidden_layer_sizes=(16, 8), max_iter=1000, random_state=42), "MLP"),
-            (LinearDiscriminantAnalysis(), "LDA")
-        ]
+        models = get_model_pipeline()
 
         # Loop through each model & train
         for col, (model_obj, model_name) in enumerate(models):

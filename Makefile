@@ -25,7 +25,10 @@ predict:
 evaluate:
 	$(PYTHON) -m src.evaluate.evaluate
 
-all: dataio ingest transform train
+all: dataio ingest transform train evaluate
+
+install:
+	$(PYTHON) -m pip install -q -r requirements.txt
 
 #---------------------------------------------------
 # Cleaning folders
@@ -36,7 +39,6 @@ clean:
 	find . -type d -name "__pycache__" -delete
 # Delete all data
 clean-data:
-	rm -rf Data/Raw/*
 	rm -rf Data/Processed/*
 
 # Delete all models, metrics, and visualizations
@@ -44,6 +46,8 @@ clean-results:
 	rm -rf models/*
 	rm -rf results/*
 	rm -rf reports/figures/*
+	rm -rf src/models/trained_models/*
+	rm -rf src/evaluate/results/*
 
 # Delete all
 clean-all: clean clean-data clean-results
