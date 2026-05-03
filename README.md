@@ -26,7 +26,7 @@ The results of the SHAP and LIME experiments are stored in ```src/evaluate/resul
 If you are facing compatibility issues with the modules in this repo, please consider creating a virtual environment with either Python 3.10 or 3.12 and installing all the dependencies using that. A code snippet that does this is included below:
 ```python
 python3.12 -m venv .venv
-source .venv/bin/activat
+source .venv/bin/activate
 python -m pip install --upgrade pip
 python -m pip install -r requirements.txt
 ```
