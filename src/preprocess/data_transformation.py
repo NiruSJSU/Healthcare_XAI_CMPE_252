@@ -5,6 +5,7 @@ import numpy as np
 from sklearn.preprocessing import StandardScaler
 from sklearn.impute import SimpleImputer
 import joblib
+import os
 
 def process_pima_indians_dataset(df):
     df = df.copy()
@@ -81,6 +82,9 @@ def process_nhanes_dataset(df):
     return df, scaler, imputer
 
 if __name__ == "__main__":
+    # Make the trained_models folder
+    os.makedirs('src/models/trained_models', exist_ok=True)
+
     #This is the module for this file
     # We load the raw data in the first step
     # Pima Dataset

@@ -1,4 +1,5 @@
-PYTHON ?= python
+# Look for python3 otherwise use python
+PYTHON := $(shell command -v python3 2> /dev/null || echo python)
 
 #---------------------------------------------------
 # Targets to run the model pipeline
