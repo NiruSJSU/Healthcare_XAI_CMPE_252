@@ -8,9 +8,6 @@ Our goals for this project are:
 4. Fit a series of explainability models such as LIME and SHAP
 5. Evaluate their ability to explain model outputs
 
-## Setup
-Our recommendation for ensuring dependencies is to create a virtual environment and install the targets highlighted in the ```requirements.txt``` file.
-
 ## Make Commands
 Please use ```make all``` to run all the modules in this project. 
 
@@ -24,6 +21,15 @@ Upon running the make command, the program will generate the processed data file
 The program generates confusion matrices for each of the models when running the make command.
 
 The results of the SHAP and LIME experiments are stored in ```src/evaluate/results``` and contain the LIME and SHAP waterfall explanation plots for each of the models.
+
+## Notes on Compatibility 
+If you are facing compatibility issues with the modules in this repo, please consider creating a virtual environment with either Python 3.10 or 3.12 and installing all the dependencies using that. A code snippet that does this is included below:
+```python
+python3.12 -m venv .venv
+source .venv/bin/activat
+python -m pip install --upgrade pip
+python -m pip install -r requirements.txt
+```
 
 ## Works Cited
 1. Our project structure was built based on the repo found here: https://github.com/kylebradbury/ml-project-structure-demo/tree/main/src
